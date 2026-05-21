@@ -112,6 +112,29 @@ const studios = [
 const serviceItems = ['Сведение', 'Мастеринг', 'Запись вокала', 'Аранжировка', 'Обложки', 'Продвижение', 'Сессионные музыканты']
 const platforms = ['Spotify', 'Apple Music', 'YouTube Music', 'Яндекс Музыка', 'VK Музыка', 'SoundCloud', 'Deezer']
 const rightsOptions = ['неисключительная лицензия', 'эксклюзивные права', 'аренда', 'личное использование', 'коммерческое использование']
+const heroCards = [
+  {
+    title: 'Купить музыку',
+    text: 'Выбирайте треки, биты, сэмплы и права для личных или коммерческих проектов.',
+    cta: 'В каталог',
+    page: 'music',
+    tone: 'visual-red',
+  },
+  {
+    title: 'Забронировать студию',
+    text: 'Сравнивайте студии по городу, цене, оборудованию и свободным слотам.',
+    cta: 'Найти слот',
+    page: 'studios',
+    tone: 'visual-cyan',
+  },
+  {
+    title: 'Выпустить релиз',
+    text: 'Соберите метаданные, выберите площадки и отправьте релиз на модерацию.',
+    cta: 'Создать релиз',
+    page: 'publish',
+    tone: 'visual-violet',
+  },
+]
 
 const navItems = [
   ['home', 'Главная'],
@@ -358,32 +381,45 @@ function Header({ page, setPage }) {
 function Home({ setPage }) {
   return (
     <section className="hero-section">
-      <div className="hero-copy">
-        <div className="eyebrow">Альфа-прототип для артистов, студий и лейблов</div>
-        <h1>Единая платформа для музыкантов: продавай, покупай, бронируй студию и выпускай релизы</h1>
-        <p>
-          SoundHub объединяет каталог музыки, бронирование студий, публикацию релизов и личный кабинет в одной премиальной
-          рабочей среде.
-        </p>
-        <div className="hero-actions">
-          <button onClick={() => setPage('music')} type="button">Открыть каталог</button>
-          <button onClick={() => setPage('studios')} type="button">Найти студию</button>
-          <button onClick={() => setPage('publish')} type="button">Выпустить релиз</button>
-        </div>
-      </div>
-      <div className="hero-visual" aria-hidden="true">
-        <div className="player-glass">
-          <span className="pulse-dot"></span>
-          <div>
-            <strong>Альфа в работе</strong>
-            <p>Каталог, сделки, студии, релизы</p>
+      <div className="hero-top">
+        <div className="hero-copy">
+          <div className="eyebrow">Премиальный альфа-маркетплейс</div>
+          <h1>Маркетплейс музыки, студий и релизов</h1>
+          <p>Покупайте права на треки, бронируйте студии и отправляйте релизы на модерацию в одном кабинете.</p>
+          <div className="hero-actions">
+            <button onClick={() => setPage('music')} type="button">Открыть каталог</button>
+            <button className="secondary" onClick={() => setPage('studios')} type="button">Найти студию</button>
+            <button className="secondary" onClick={() => setPage('publish')} type="button">Выпустить релиз</button>
           </div>
         </div>
-        <div className="wave-grid">
-          {Array.from({ length: 36 }).map((_, index) => (
-            <span key={index} style={{ '--height': `${26 + ((index * 17) % 82)}px` }} />
-          ))}
+        <div className="hero-visual" aria-hidden="true">
+          <div className="player-glass">
+            <span className="pulse-dot"></span>
+            <div>
+              <strong>Альфа в работе</strong>
+              <p>Каталог, сделки, студии, релизы</p>
+            </div>
+          </div>
+          <div className="wave-grid">
+            {Array.from({ length: 30 }).map((_, index) => (
+              <span key={index} style={{ '--height': `${22 + ((index * 17) % 70)}px` }} />
+            ))}
+          </div>
         </div>
+      </div>
+      <div className="hero-product-grid">
+        {heroCards.map((card) => (
+          <article className="product-card glass-panel" key={card.title}>
+            <div className={`product-visual ${card.tone}`} aria-hidden="true">
+              <span></span>
+            </div>
+            <div>
+              <h3>{card.title}</h3>
+              <p>{card.text}</p>
+            </div>
+            <button className="secondary" onClick={() => setPage(card.page)} type="button">{card.cta}</button>
+          </article>
+        ))}
       </div>
       <div className="stats-strip">
         {[
@@ -503,39 +539,61 @@ function Publish({ submitRelease }) {
     <section className="page-section">
       <SectionTitle kicker="Публикация" title="Мастер выпуска релиза" text="Заполните карточку релиза. После отправки заявка попадет на модерацию." />
       <form className="wizard glass-panel" onSubmit={submitRelease}>
-        <Input name="title" label="Название релиза" required />
-        <Input name="artist" label="Исполнитель" required />
-        <Input name="contributors" label="Участники" />
-        <Input name="genre" label="Жанр" required />
-        <Input name="language" label="Язык" />
-        <label className="field">
-          Версия
-          <select name="explicit">
-            <option>Без маркировки</option>
-            <option>18+</option>
-          </select>
-        </label>
-        <Input name="date" label="Дата релиза" type="date" required />
-        <div className="upload-box">Обложка: демо-загрузка</div>
-        <div className="upload-box">Аудиофайл: демо-загрузка</div>
-        <div className="platform-box">
-          <span>Платформы</span>
-          {platforms.map((platform) => (
-            <label key={platform}>
-              <input name="platforms" type="checkbox" value={platform} defaultChecked={platform.includes('Music') || platform.includes('Музыка')} />
-              {platform}
+        <div className="form-group">
+          <h3>Основное</h3>
+          <div className="form-grid">
+            <Input name="title" label="Название релиза" required />
+            <Input name="artist" label="Исполнитель" required />
+            <Input name="contributors" label="Участники" />
+            <Input name="genre" label="Жанр" required />
+            <Input name="language" label="Язык" />
+            <label className="field">
+              Версия
+              <select name="explicit">
+                <option>Без маркировки</option>
+                <option>18+</option>
+              </select>
             </label>
-          ))}
+            <Input name="date" label="Дата релиза" type="date" required />
+          </div>
         </div>
-        <Input name="rights" label="Права" />
-        <Input name="label" label="Лейбл" />
-        <Input name="isrc" label="ISRC" />
-        <Input name="upc" label="UPC" />
-        <label className="field wide">
-          Комментарий для модератора
-          <textarea name="comment" rows="4" />
-        </label>
-        <button className="wide" type="submit">Отправить на модерацию</button>
+        <div className="form-group">
+          <h3>Файлы</h3>
+          <div className="form-grid">
+            <div className="upload-box">Обложка: демо-загрузка</div>
+            <div className="upload-box">Аудиофайл: демо-загрузка</div>
+          </div>
+        </div>
+        <div className="form-group">
+          <h3>Площадки</h3>
+          <div className="platform-box">
+            {platforms.map((platform) => (
+              <label key={platform}>
+                <input name="platforms" type="checkbox" value={platform} defaultChecked={platform.includes('Music') || platform.includes('Музыка')} />
+                {platform}
+              </label>
+            ))}
+          </div>
+        </div>
+        <div className="form-group">
+          <h3>Права и метаданные</h3>
+          <div className="form-grid">
+            <Input name="rights" label="Права" />
+            <Input name="label" label="Лейбл" />
+            <Input name="isrc" label="ISRC" />
+            <Input name="upc" label="UPC" />
+          </div>
+        </div>
+        <div className="form-group">
+          <h3>Комментарий</h3>
+          <label className="field">
+            Комментарий для модератора
+            <textarea name="comment" rows="4" />
+          </label>
+        </div>
+        <div className="form-footer">
+          <button type="submit">Отправить на модерацию</button>
+        </div>
       </form>
     </section>
   )
@@ -628,7 +686,10 @@ function OwnerStudios({ ownerStudios, addOwnerStudio, bookings, updateBooking })
   return (
     <div className="owner-grid">
       <form className="owner-form glass-panel" onSubmit={addOwnerStudio}>
-        <h3>Добавить студию</h3>
+        <div>
+          <span className="mini-label">Профиль студии</span>
+          <h3>Добавить студию</h3>
+        </div>
         <Input name="name" label="Название" required />
         <Input name="description" label="Описание" />
         <Input name="city" label="Город" required />
@@ -638,29 +699,42 @@ function OwnerStudios({ ownerStudios, addOwnerStudio, bookings, updateBooking })
         <div className="upload-box">Фото студии: демо-загрузка</div>
         <button type="submit">Сохранить студию</button>
       </form>
-      <div className="record-list">
-        {ownerStudios.map((studio) => (
-          <article className="record glass-panel" key={studio.id}>
-            <div>
-              <h3>{studio.name}</h3>
-              <p>{studio.city} · {studio.address}</p>
-              <span>{studio.status} · {studio.schedule}</span>
-            </div>
-          </article>
-        ))}
-        {bookings.map((booking) => (
-          <article className="record glass-panel" key={booking.id}>
-            <div>
-              <h3>{booking.studio.name}</h3>
-              <p>{booking.date} · {booking.slot}</p>
-              <span>{booking.status}</span>
-            </div>
-            <div className="split-actions">
-              <button onClick={() => updateBooking(booking.id, 'Подтверждено студией')} type="button">Подтвердить</button>
-              <button className="secondary" onClick={() => updateBooking(booking.id, 'Отклонено студией')} type="button">Отклонить</button>
-            </div>
-          </article>
-        ))}
+      <div className="owner-panel glass-panel">
+        <div className="owner-panel-head">
+          <div>
+            <span className="mini-label">Управление</span>
+            <h3>Мои студии и бронирования</h3>
+          </div>
+          <span className="count-badge">{ownerStudios.length + bookings.length}</span>
+        </div>
+        <div className="record-list">
+          {!ownerStudios.length && !bookings.length && (
+            <EmptyPanel title="Студий пока нет" text="Добавьте первую студию, чтобы увидеть здесь карточку профиля и входящие бронирования." />
+          )}
+          {ownerStudios.map((studio) => (
+            <article className="studio-preview" key={studio.id}>
+              <div className="preview-art" aria-hidden="true"></div>
+              <div>
+                <h3>{studio.name}</h3>
+                <p>{studio.city} · {studio.address}</p>
+                <span>{studio.status} · {studio.schedule || 'Расписание не указано'}</span>
+              </div>
+            </article>
+          ))}
+          {bookings.map((booking) => (
+            <article className="record booking-record" key={booking.id}>
+              <div>
+                <h3>{booking.studio.name}</h3>
+                <p>{booking.date} · {booking.slot}</p>
+                <span>{booking.status}</span>
+              </div>
+              <div className="split-actions">
+                <button onClick={() => updateBooking(booking.id, 'Подтверждено студией')} type="button">Подтвердить</button>
+                <button className="secondary" onClick={() => updateBooking(booking.id, 'Отклонено студией')} type="button">Отклонить</button>
+              </div>
+            </article>
+          ))}
+        </div>
       </div>
     </div>
   )
